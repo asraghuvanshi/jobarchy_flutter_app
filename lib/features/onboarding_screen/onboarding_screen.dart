@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:jobarchy_flutter_app/screen/auth_screen/signup_screen';
+import 'package:jobarchy_flutter_app/features/auth/signup_screen';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});

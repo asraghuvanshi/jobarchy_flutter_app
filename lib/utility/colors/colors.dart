@@ -11,6 +11,9 @@ class AppColors {
   static const Color lightGray = Color(0xFFE0E0E0); // Light Gray
   static const Color black = Color(0xFF000000);
 
+
+  static const Color skyBlue = Color(0xFF5EFCE8);
+  static const Color skyBlueDark = Color(0xFF736EFE);
   //  Gradients
   static const LinearGradient purpleOrangeGradient = LinearGradient(
     colors: [Color(0xFF6A1B9A), Color(0xFFFF9800)],

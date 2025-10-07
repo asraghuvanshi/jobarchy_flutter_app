@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:jobarchy_flutter_app/screen/onboarding_screen/onboarding_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jobarchy_flutter_app/features/onboarding_screen/onboarding_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
