@@ -13,12 +13,14 @@ class LoginRepositoryImpl implements LoginRepository {
   Future<bool> login(LoginEntity entity) async {
     try {
       final response = await apiClient.post(
-        "/auth/login",
+        "login",
         data: jsonEncode({
           'email': entity.email,
           'password': entity.password,
         }),
       );
+
+      print("asdfasdfas ${response}");
       return response.statusCode == 200;
     } on NetworkException catch (e) {
       rethrow; // handled by ViewModel

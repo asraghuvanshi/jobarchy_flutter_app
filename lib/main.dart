@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jobarchy_flutter_app/features/auth/presentation/views/login_screen.dart';
 import 'package:jobarchy_flutter_app/features/onboarding_screen/onboarding_screen.dart';
 
 void main() {
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
   
       ),
-      home: const SplashScreen(),
+      home: const LoginScreen(),
     );
   }
 }

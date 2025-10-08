@@ -28,6 +28,8 @@ class ApiClient {
 
     try {
       final response = await _dio.post(endpoint, data: data);
+      print(endpoint);
+      print(endpoint);
       return response;
     } on DioException catch (e) {
       throw NetworkException.fromDioError(e);
