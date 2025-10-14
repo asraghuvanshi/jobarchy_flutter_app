@@ -1,26 +1,29 @@
 import 'package:dio/dio.dart';
 
+import 'package:dio/dio.dart';
+
 class NetworkException implements Exception {
   final String message;
 
   const NetworkException(this.message);
 
   factory NetworkException.fromDioError(DioException error) {
-    switch (error.type) {
-      case DioExceptionType.connectionTimeout:
-        return const NetworkException("Connection timeout");
-      case DioExceptionType.sendTimeout:
-        return const NetworkException("Send timeout");
-      case DioExceptionType.receiveTimeout:
-        return const NetworkException("Receive timeout");
-      case DioExceptionType.badResponse:
-        return NetworkException("Server error: ${error.response?.statusCode}");
-      case DioExceptionType.cancel:
-        return const NetworkException("Request cancelled");
-      default:
-        return const NetworkException("Something went wrong");
+    if (error.type == DioExceptionType.connectionError ||
+        error.type == DioExceptionType.connectionTimeout ||
+        error.type == DioExceptionType.sendTimeout) {
+      return const NetworkException('No Internet Connection');
     }
-  }
 
-  const NetworkException.noInternet() : message = "No internet connection";
+    if (error.response != null && error.response?.data is Map<String, dynamic>) {
+      final data = error.response!.data as Map<String, dynamic>;
+      final msg = data['message'] ?? 'Unknown error';
+      return NetworkException(msg);
+    }
+
+    return NetworkException(error.message ?? 'Something went wrong');
+  }
+}
+
+class NoInternetException extends NetworkException {
+  const NoInternetException() : super('No Internet Connection');
 }
