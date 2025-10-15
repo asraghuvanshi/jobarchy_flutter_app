@@ -19,10 +19,7 @@ class SignupScreen extends ConsumerWidget {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Color(0xFF1B2735),
-              Color(0xFF090A0F),
-            ],
+            colors: [Color(0xFF1B2735), Color(0xFF090A0F)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -39,8 +36,22 @@ class SignupScreen extends ConsumerWidget {
                     duration: const Duration(milliseconds: 1000),
                     child: Column(
                       children: [
-                        const Icon(Icons.work_rounded,
-                            size: 70, color: Colors.white),
+                        Padding(
+                          padding: EdgeInsets.only(top: 50),
+                          child: AnimatedOpacity(
+                            opacity: 1.0,
+                            duration: Duration(milliseconds: 600),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: Image.asset(
+                                'images/app_icon.png',
+                                height: 100,
+                                width: 100,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                        ),
                         const SizedBox(height: 10),
                         Text(
                           'JobArchy',
@@ -127,9 +138,7 @@ class SignupScreen extends ConsumerWidget {
                   const SizedBox(height: 30),
 
                   /// Signup Button
-                  ZoomIn(
-                    child: _buildSignupButton(context, ref),
-                  ),
+                  ZoomIn(child: _buildSignupButton(context, ref)),
 
                   const SizedBox(height: 20),
 
@@ -193,8 +202,10 @@ class SignupScreen extends ConsumerWidget {
               hintStyle: const TextStyle(color: Colors.white70),
               prefixIcon: Icon(icon, color: Colors.white70, size: 20),
               border: InputBorder.none,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 12,
+              ),
             ),
           ),
         ),
@@ -233,12 +244,18 @@ class SignupScreen extends ConsumerWidget {
                     ],
                   ),
                   items: genders
-                      .map((g) => DropdownMenuItem(
-                            value: g,
-                            child: Text(g,
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 15)),
-                          ))
+                      .map(
+                        (g) => DropdownMenuItem(
+                          value: g,
+                          child: Text(
+                            g,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
+                      )
                       .toList(),
                   value: selectedGender,
                   dropdownStyleData: DropdownStyleData(
@@ -301,14 +318,18 @@ class SignupScreen extends ConsumerWidget {
                     ],
                   ),
                   items: countries
-                      .map((c) => DropdownMenuItem(
-                            value: c,
-                            child: Text(
-                              c,
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 15),
+                      .map(
+                        (c) => DropdownMenuItem(
+                          value: c,
+                          child: Text(
+                            c,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
                             ),
-                          ))
+                          ),
+                        ),
+                      )
                       .toList(),
                   value: selectedCountry,
                   dropdownStyleData: DropdownStyleData(
@@ -343,8 +364,9 @@ class SignupScreen extends ConsumerWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white.withOpacity(0.9),
           foregroundColor: Colors.black87,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
           elevation: 6,
         ),
         child: const Text(

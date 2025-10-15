@@ -2,7 +2,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginScreen extends ConsumerWidget {
   final TextEditingController emailController = TextEditingController();
@@ -16,10 +17,7 @@ class LoginScreen extends ConsumerWidget {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Color(0xFF1B2735),
-              Color(0xFF090A0F),
-            ],
+            colors: [Color(0xFF1B2735), Color(0xFF090A0F)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -36,12 +34,26 @@ class LoginScreen extends ConsumerWidget {
                     duration: const Duration(milliseconds: 1000),
                     child: Column(
                       children: [
-                        const Icon(Icons.work_rounded,
-                            size: 70, color: Colors.white),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 50),
+                          child: AnimatedOpacity(
+                            opacity: 1.0,
+                            duration: const Duration(milliseconds: 600),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: Image.asset(
+                                'images/app_icon.png',
+                                height: 100,
+                                width: 100,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                        ),
                         const SizedBox(height: 10),
                         Text(
                           'JobArchy',
-                          style: TextStyle(
+                          style: GoogleFonts.poppins(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
@@ -56,9 +68,9 @@ class LoginScreen extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(height: 6),
-                        const Text(
+                        Text(
                           'Join to Find Your Dream Job',
-                          style: TextStyle(
+                          style: GoogleFonts.poppins(
                             fontSize: 16,
                             color: Colors.white70,
                             fontWeight: FontWeight.w300,
@@ -78,7 +90,6 @@ class LoginScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 30),
-               
                   FadeInLeft(
                     child: _buildTextField(
                       controller: passwordController,
@@ -87,28 +98,58 @@ class LoginScreen extends ConsumerWidget {
                       obscureText: true,
                     ),
                   ),
-            
                   const SizedBox(height: 30),
 
+                  /// Login Button
+                  ZoomIn(child: _buildSignupButton(context, ref)),
+                  const SizedBox(height: 80),
+
                   ZoomIn(
-                    child: _buildSignupButton(context, ref),
+                    delay: const Duration(milliseconds: 200),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: _buildSocialLoginButton(
+                            context: context,
+                            icon: FontAwesomeIcons.google,
+                            backgroundColor: Colors.white,
+                            textColor: Colors.black87,
+                            onPressed: () {},
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+
+                        Expanded(
+                          child: _buildSocialLoginButton(
+                            context: context,
+                            icon: FontAwesomeIcons.linkedin,
+                            backgroundColor: const Color(0xFF0077B5),
+                            textColor: Colors.white,
+                            onPressed: () {
+                              // Add LinkedIn sign-in logic here
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
+                  const SizedBox(height: 40),
 
-                  const SizedBox(height: 20),
-
+                  /// Signup Link
                   FadeInUp(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
+                        Text(
                           "Don't have an account? ",
-                          style: TextStyle(color: Colors.white70),
+                          style: GoogleFonts.poppins(color: Colors.white70),
                         ),
                         GestureDetector(
                           onTap: () => Navigator.pushNamed(context, '/signup'),
-                          child: const Text(
+                          child: Text(
                             'Signup',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               decoration: TextDecoration.underline,
@@ -149,21 +190,22 @@ class LoginScreen extends ConsumerWidget {
             controller: controller,
             obscureText: obscureText,
             keyboardType: keyboardType,
-            style: const TextStyle(color: Colors.white, fontSize: 15),
+            style: GoogleFonts.poppins(color: Colors.white, fontSize: 15),
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: const TextStyle(color: Colors.white70),
+              hintStyle: GoogleFonts.poppins(color: Colors.white70),
               prefixIcon: Icon(icon, color: Colors.white70, size: 20),
               border: InputBorder.none,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 12,
+              ),
             ),
           ),
         ),
       ),
     );
   }
-
 
   Widget _buildSignupButton(BuildContext context, WidgetRef ref) {
     return SizedBox(
@@ -174,13 +216,63 @@ class LoginScreen extends ConsumerWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white.withOpacity(0.9),
           foregroundColor: Colors.black87,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
           elevation: 6,
         ),
-        child: const Text(
+        child: Text(
           'Login',
-          style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+          style: GoogleFonts.poppins(
+            fontSize: 17,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSocialLoginButton({
+    required BuildContext context,
+    required IconData icon,
+    required Color backgroundColor,
+    required Color textColor,
+    required VoidCallback onPressed,
+  }) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          height: 55,
+          decoration: BoxDecoration(
+            color: backgroundColor.withOpacity(0.9),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: Colors.white24, width: 1),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onPressed,
+              borderRadius: BorderRadius.circular(14),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FaIcon(icon, size: 20, color: textColor),
+                  const SizedBox(width: 8),
+                  Text(
+                    icon == FontAwesomeIcons.google ? 'Google' : 'LinkedIn',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: textColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

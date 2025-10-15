@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart';
 
-import 'package:dio/dio.dart';
-
 class NetworkException implements Exception {
   final String message;
 
