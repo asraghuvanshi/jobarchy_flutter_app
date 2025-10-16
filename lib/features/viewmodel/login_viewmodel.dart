@@ -5,7 +5,6 @@ import 'package:jobarchy_flutter_app/core/network/network_exceptions.dart';
 import 'package:jobarchy_flutter_app/features/model/login_response.dart';
 
 
-
 final loginViewModelProvider =
     StateNotifierProvider<LoginViewModel, AsyncValue<LoginResponse?>>(
   (ref) => LoginViewModel(),
@@ -16,10 +15,33 @@ class LoginViewModel extends StateNotifier<AsyncValue<LoginResponse?>> {
 
   LoginViewModel() : super(const AsyncData(null));
 
-  Future<void> login(String url, Map<String, dynamic> params) async {
+  String? validate(String email, String password) {
+    if (email.isEmpty || password.isEmpty) {
+      return 'Email and password are required.';
+    }
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (!emailRegex.hasMatch(email)) {
+      return 'Please enter a valid email address.';
+    }
+    if (password.length < 6) {
+      return 'Password must be at least 6 characters long.';
+    }
+    return null;
+  }
+
+  Future<void> login(String url, String email, String password) async {
+    final validationError = validate(email, password);
+    if (validationError != null) {
+      state = AsyncError(validationError, StackTrace.current);
+      return;
+    }
+
     state = const AsyncLoading();
     try {
-      final data = await _apiService.post(url, params);
+      final data = await _apiService.post(url, {
+        'email': email,
+        'password': password,
+      });
       final loginResponse = LoginResponse.fromJson(data);
       state = AsyncData(loginResponse);
     } on NoInternetException {
@@ -27,7 +49,7 @@ class LoginViewModel extends StateNotifier<AsyncValue<LoginResponse?>> {
     } on NetworkException catch (e) {
       state = AsyncError(e.message, StackTrace.current);
     } catch (e) {
-      state = AsyncError('Unexpected error', StackTrace.current);
+      state = AsyncError('Unexpected error occurred', StackTrace.current);
     }
   }
 }
