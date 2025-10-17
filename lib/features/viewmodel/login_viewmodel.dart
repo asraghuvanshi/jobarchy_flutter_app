@@ -6,11 +6,11 @@ import 'package:jobarchy_flutter_app/features/model/login_response.dart';
 
 
 final loginViewModelProvider =
-    StateNotifierProvider<LoginViewModel, AsyncValue<LoginResponse?>>(
+    StateNotifierProvider<LoginViewModel, AsyncValue<LoginModel?>>(
   (ref) => LoginViewModel(),
 );
 
-class LoginViewModel extends StateNotifier<AsyncValue<LoginResponse?>> {
+class LoginViewModel extends StateNotifier<AsyncValue<LoginModel?>> {
   final ApiService _apiService = ApiService();
 
   LoginViewModel() : super(const AsyncData(null));
@@ -42,7 +42,7 @@ class LoginViewModel extends StateNotifier<AsyncValue<LoginResponse?>> {
         'email': email,
         'password': password,
       });
-      final loginResponse = LoginResponse.fromJson(data);
+      final loginResponse = LoginModel.fromJson(data);
       state = AsyncData(loginResponse);
     } on NoInternetException {
       state = AsyncError('No Internet Connection', StackTrace.current);

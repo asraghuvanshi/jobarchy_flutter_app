@@ -151,7 +151,7 @@ class SignupScreen extends ConsumerWidget {
                           style: TextStyle(color: Colors.white70),
                         ),
                         GestureDetector(
-                          onTap: () => Navigator.pushNamed(context, '/login'),
+                          onTap: () => Navigator.pop(context),
                           child: const Text(
                             'Login',
                             style: TextStyle(

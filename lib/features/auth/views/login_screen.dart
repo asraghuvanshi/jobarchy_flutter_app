@@ -6,19 +6,38 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jobarchy_flutter_app/features/viewmodel/login_viewmodel.dart';
 
-class LoginScreen extends ConsumerWidget {
+class LoginScreen extends ConsumerStatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  LoginScreen({super.key});
+  @override
+  void initState() {
+    super.initState();
+    emailController.text = "tes@yopmail.com";
+    passwordController.text = "Qwerty@123";
+  }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final loginState = ref.watch(loginViewModelProvider);
 
     ref.listen(loginViewModelProvider, (previous, next) {
       next.whenOrNull(
-        error: (err, _) {
+        error: (err, stack) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(err.toString()),
@@ -34,8 +53,7 @@ class LoginScreen extends ConsumerWidget {
                 backgroundColor: Colors.green,
               ),
             );
-            // Navigate to home screen
-            // Navigator.pushReplacementNamed(context, '/home');
+            Navigator.pushReplacementNamed(context, '/home');
           }
         },
       );
@@ -79,9 +97,7 @@ class LoginScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 30),
 
-                  ZoomIn(
-                    child: _buildLoginButton(context, ref, loginState),
-                  ),
+                  ZoomIn(child: _buildLoginButton(context, ref, loginState)),
                   const SizedBox(height: 80),
                   _buildSocialButtons(),
                   const SizedBox(height: 40),
@@ -137,7 +153,10 @@ class LoginScreen extends ConsumerWidget {
   }
 
   Widget _buildLoginButton(
-      BuildContext context, WidgetRef ref, AsyncValue loginState) {
+    BuildContext context,
+    WidgetRef ref,
+    AsyncValue loginState,
+  ) {
     final isLoading = loginState is AsyncLoading;
 
     return SizedBox(
@@ -147,7 +166,9 @@ class LoginScreen extends ConsumerWidget {
         onPressed: isLoading
             ? null
             : () {
-                ref.read(loginViewModelProvider.notifier).login(
+                ref
+                    .read(loginViewModelProvider.notifier)
+                    .login(
                       "http://10.45.236.191:8080/v1/auth/login",
                       emailController.text.trim(),
                       passwordController.text.trim(),
