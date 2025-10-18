@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jobarchy_flutter_app/core/utils/environment.dart';
 import 'package:jobarchy_flutter_app/features/viewmodel/login_viewmodel.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -169,7 +170,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ref
                     .read(loginViewModelProvider.notifier)
                     .login(
-                      "http://10.45.236.191:8080/v1/auth/login",
+                      "${Environment.baseUrl}auth/login",
                       emailController.text.trim(),
                       passwordController.text.trim(),
                     );

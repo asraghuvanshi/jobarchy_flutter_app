@@ -4,7 +4,8 @@ import 'package:jobarchy_flutter_app/features/auth/views/login_screen.dart';
 import 'package:jobarchy_flutter_app/features/auth/views/signup_screen.dart';
 import 'package:jobarchy_flutter_app/features/onboarding_screen/onboarding_screen.dart' hide LoginScreen;
 import 'package:jobarchy_flutter_app/features/onboarding_screen/splash_screen.dart';
-import 'package:jobarchy_flutter_app/features/tabbar/home_screen.dart';
+import 'package:jobarchy_flutter_app/features/tabbar/home_tab.dart';
+import 'package:jobarchy_flutter_app/features/tabbar/tabbar_screen.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) =>  LoginScreen(),
         '/signup': (context) => SignupScreen(),
         '/forgotPassword': (context) => const ForgotPasswordScreen(),
-        '/home': (context) => const HomeScreen()
+        '/home': (context) =>  TabbarScreen()
       },
     );
   }

@@ -2,13 +2,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:jobarchy_flutter_app/core/network/api_service.dart';
 import 'package:jobarchy_flutter_app/core/network/network_exceptions.dart';
+import 'package:jobarchy_flutter_app/core/utils/sharedpreference.dart';
 import 'package:jobarchy_flutter_app/features/model/login_response.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 final loginViewModelProvider =
     StateNotifierProvider<LoginViewModel, AsyncValue<LoginModel?>>(
-  (ref) => LoginViewModel(),
-);
+      (ref) => LoginViewModel(),
+    );
 
 class LoginViewModel extends StateNotifier<AsyncValue<LoginModel?>> {
   final ApiService _apiService = ApiService();
@@ -43,6 +44,9 @@ class LoginViewModel extends StateNotifier<AsyncValue<LoginModel?>> {
         'password': password,
       });
       final loginResponse = LoginModel.fromJson(data);
+      if (loginResponse.data.token.isNotEmpty) {
+        SharedPrefsHelper.saveToken(loginResponse.data.token);
+      }
       state = AsyncData(loginResponse);
     } on NoInternetException {
       state = AsyncError('No Internet Connection', StackTrace.current);

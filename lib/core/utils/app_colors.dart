@@ -5,8 +5,17 @@ class AppGradients {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [
-      Color(0xFF1A237E), // Colors.blue.shade900
-      Color(0xFF7B1FA2), // Colors.purple.shade600
+      Color(0xFF1A237E),
+      Color(0xFF7B1FA2),
     ],
   );
+
+  static const LinearGradient appGradient =  LinearGradient(
+      colors: [
+        Color(0xFFFD1D1D),
+        Color(0xFF1A1717),
+      ],
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+    );
 }
