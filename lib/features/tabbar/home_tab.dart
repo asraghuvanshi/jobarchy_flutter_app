@@ -56,14 +56,14 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               const Center(child: CircularProgressIndicator(color: Colors.red)),
           error: (error, _) => Center(child: Text('Error: $error')),
           data: (userPostModel) {
-            if (userPostModel == null || userPostModel.data.isEmpty) {
-              return const Center(child: Text('No posts available'));
+           if(userPostModel == null || (userPostModel.data?.posts?.isEmpty ?? true)) { 
+               return const Center(child: Text('No posts available'));
             }
             return ListView.builder(
-              itemCount: userPostModel.data.length,
+              itemCount: userPostModel.data?.posts?.length,
               itemBuilder: (context, index) {
-                final post = userPostModel.data[index];
-                return PostCard(post: post, baseUrl: Environment.baseUrl);
+                final post = userPostModel.data?.posts?[index];
+                return PostCard(post: post, baseUrl: Environment.baseUrl, currentUserId: "1");
               },
             );
           },
