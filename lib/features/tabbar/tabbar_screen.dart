@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jobarchy_flutter_app/core/utils/colors.dart';
 import 'package:jobarchy_flutter_app/features/tabbar/home_tab.dart';
 import 'package:jobarchy_flutter_app/features/tabbar/jobs_tab.dart';
 import 'package:jobarchy_flutter_app/features/tabbar/message_tab.dart';
@@ -13,12 +14,6 @@ class TabbarScreen extends StatefulWidget {
 class _TabbarScreenState extends State<TabbarScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
-  static const LinearGradient appGradient = LinearGradient(
-    colors: [Color(0xFFFD1D1D), Color(0xFF1A1717)],
-    begin: Alignment.centerLeft,
-    end: Alignment.centerRight,
-  );
 
   @override
   void initState() {
@@ -35,11 +30,11 @@ class _TabbarScreenState extends State<TabbarScreen>
   // Gradient icon with larger size
   Widget _buildGradientIcon(IconData icon) {
     return ShaderMask(
-      shaderCallback: (Rect bounds) => appGradient.createShader(bounds),
+      shaderCallback: (Rect bounds) => AppColors.appGradient.createShader(bounds),
       child: Icon(
         icon,
         color: Colors.white,
-        size: 28, // Increased icon size
+        size: 30, 
       ),
     );
   }
@@ -58,10 +53,10 @@ class _TabbarScreenState extends State<TabbarScreen>
         ],
       ),
       bottomNavigationBar: Container(
-        color: Colors.white, // Tab bar background color
+        color: Color(0xFF1B2735),
         child: TabBar(
           controller: _tabController,
-          labelColor: Colors.deepOrange,
+          labelColor: AppColors.orangeColor,
           unselectedLabelColor: Colors.grey,
           indicatorColor: Colors.white,
           labelStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500),

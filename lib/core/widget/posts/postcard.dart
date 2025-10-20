@@ -1,10 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:jobarchy_flutter_app/features/model/postmodel.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:jobarchy_flutter_app/features/viewmodel/post_viewmodel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jobarchy_flutter_app/features/model/postmodel.dart';
+import 'package:jobarchy_flutter_app/core/utils/colors.dart';
 
+/// ------------------------------
+///  POST CARD
+/// ------------------------------
 class PostCard extends ConsumerStatefulWidget {
   final PostResponse? post;
   final String baseUrl;
@@ -18,287 +21,207 @@ class PostCard extends ConsumerStatefulWidget {
   });
 
   @override
-  _PostCardState createState() => _PostCardState();
+  ConsumerState<PostCard> createState() => _PostCardState();
 }
 
-class _PostCardState extends ConsumerState<PostCard> with SingleTickerProviderStateMixin {
+class _PostCardState extends ConsumerState<PostCard> {
   bool _isExpanded = false;
-  late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    );
-    _fadeAnimation = CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    );
-    _animationController.forward();
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
 
   String _formatTime(DateTime? createdAt) {
     final date = createdAt ?? DateTime.now();
-    final now = DateTime.now();
-    final difference = now.difference(date);
-    if (difference.inDays > 0) {
-      return '${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ago';
-    } else if (difference.inHours > 0) {
-      return '${difference.inHours} hour${difference.inHours > 1 ? 's' : ''} ago';
-    } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes} minute${difference.inMinutes > 1 ? 's' : ''} ago';
-    } else {
-      return 'Just now';
-    }
+    final diff = DateTime.now().difference(date);
+    if (diff.inDays > 0) return '${diff.inDays}d ago';
+    if (diff.inHours > 0) return '${diff.inHours}h ago';
+    if (diff.inMinutes > 0) return '${diff.inMinutes}m ago';
+    return 'Just now';
   }
 
   void _showPostOptions(BuildContext context) {
-    showModalBottomSheet(
+    showCupertinoModalPopup(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.edit, color: Colors.blueAccent),
-              title: const Text('Edit Post', style: TextStyle(fontSize: 16)),
-              onTap: () {
-                Navigator.pop(context);
-                if (widget.post != null) {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => EditPostScreen(
-                  //       post: widget.post!,
-                  //       baseUrl: widget.baseUrl,
-                  //     ),
-                  //   ),
-                  // );
-                }
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.delete, color: Colors.red),
-              title: const Text('Delete Post', style: TextStyle(fontSize: 16)),
-              onTap: () async {
-                Navigator.pop(context);
-                final confirm = await showDialog<bool>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Delete Post'),
-                    content: const Text('Are you sure you want to delete this post?'),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, false),
-                        child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, true),
-                        child: const Text('Delete', style: TextStyle(color: Colors.red)),
-                      ),
-                    ],
-                  ),
-                );
-                if (confirm == true && widget.post?.id != null) {
-                  // ref.read(postViewModelProvider.notifier).deletePost(
-                  //       widget.post!.id!,
-                  //       context,
-                  //       widget.baseUrl,
-                  //     );
-                }
-              },
-            ),
-          ],
+      builder: (_) => CupertinoActionSheet(
+        title: const Text("Post Options",
+            style: TextStyle(color: Colors.black, fontSize: 16)),
+        actions: [
+          CupertinoActionSheetAction(
+            onPressed: () => Navigator.pop(context),
+            isDefaultAction: true,
+            child: const Text('Edit Post',
+                style: TextStyle(color: CupertinoColors.activeBlue)),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () => Navigator.pop(context),
+            isDestructiveAction: true,
+            child: const Text('Delete Post',
+                style: TextStyle(color: CupertinoColors.destructiveRed)),
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel',
+              style: TextStyle(color: CupertinoColors.activeBlue)),
         ),
+      ),
+    );
+  }
+
+  // Simple orange text (no gradient stroke)
+  Widget _orangeText(String data) {
+    return Text(
+      data,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.post == null) {
-      return const SizedBox.shrink(); // Return empty widget if post is null
-    }
+    final post = widget.post;
+    if (post == null) return const SizedBox.shrink();
 
-    final post = widget.post!;
     final imageUrl = post.imageUrl?.isNotEmpty ?? false
         ? '${widget.baseUrl}${post.imageUrl!.replaceAll('\\', '/')}'
         : null;
 
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: Colors.grey.shade200, width: 1),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1F2933), 
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: AppColors.black.withAlpha(100), width: 1.5),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(22),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// Header
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              child: Row(
                 children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 24,
-                        backgroundColor: Colors.grey[200],
-                        child: ClipOval(
-                          child: post.author?.imageUrl?.isNotEmpty ?? false
-                              ? CachedNetworkImage(
-                                  imageUrl: '${widget.baseUrl}${post.author!.imageUrl!.replaceAll('\\', '/')}',
-                                  fit: BoxFit.cover,
-                                  width: 48,
-                                  height: 48,
-                                  placeholder: (context, url) => Shimmer.fromColors(
-                                    baseColor: Colors.grey[300]!,
-                                    highlightColor: Colors.grey[100]!,
-                                    child: Container(color: Colors.white),
-                                  ),
-                                  errorWidget: (context, url, error) => const Icon(
-                                    Icons.person,
-                                    size: 24,
-                                    color: Colors.grey,
-                                  ),
-                                )
-                              : const Icon(
-                                  Icons.person,
-                                  size: 24,
-                                  color: Colors.grey,
-                                ),
+                  CircleAvatar(
+                    radius: 26,
+                    backgroundColor: Colors.grey[800],
+                    child: ClipOval(
+                      child: post.author?.imageUrl?.isNotEmpty ?? false
+                          ? CachedNetworkImage(
+                              imageUrl:
+                                  '${widget.baseUrl}${post.author!.imageUrl!.replaceAll('\\', '/')}',
+                              width: 52,
+                              height: 52,
+                              fit: BoxFit.cover,
+                              placeholder: (_, __) =>
+                                  const Icon(Icons.person, color: Colors.grey),
+                              errorWidget: (_, __, ___) =>
+                                  const Icon(Icons.person, color: Colors.grey),
+                            )
+                          : const Icon(Icons.person,
+                              color: Colors.grey, size: 26),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _orangeText(post.author?.name ?? "Unknown Author"),
+                        Text(
+                          post.country ?? "Unknown",
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.grey[400],
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            post.author?.name?.isNotEmpty ?? false
-                                ? post.author!.name!
-                                : 'Unknown Author',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
+                        Text(
+                          _formatTime(post.createdAt),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[500],
                           ),
-                          Text(
-                            post.country?.isNotEmpty ?? false ? post.country! : 'Unknown Location',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          Text(
-                            _formatTime(post.createdAt),
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
                   if (post.userId?.toString() == widget.currentUserId)
                     IconButton(
-                      icon: const Icon(Icons.more_vert, color: Colors.grey),
+                      icon: const Icon(CupertinoIcons.ellipsis,
+                          color: Colors.grey),
                       onPressed: () => _showPostOptions(context),
                     ),
                 ],
               ),
-              const SizedBox(height: 12),
-              Text(
-                post.title?.isNotEmpty ?? false ? post.title! : 'No Title',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                  letterSpacing: 0.2,
-                ),
-              ),
-              const SizedBox(height: 8),
-              if (imageUrl != null)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: CachedNetworkImage(
-                    imageUrl: imageUrl,
-                    height: 200,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Shimmer.fromColors(
-                      baseColor: Colors.grey[300]!,
-                      highlightColor: Colors.grey[100]!,
-                      child: Container(
-                        height: 200,
-                        color: Colors.white,
-                      ),
+            ),
+
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    post.title ?? 'Untitled',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      letterSpacing: 0.3,
                     ),
-                    errorWidget: (context, url, error) {
-                      print('Image load error: $url, $error');
-                      return Container(
-                        height: 200,
-                        color: Colors.grey[200],
-                        child: const Icon(
-                          Icons.broken_image,
-                          size: 50,
-                          color: Colors.grey,
+                  ),
+                  const SizedBox(height: 8),
+                  AnimatedCrossFade(
+                    duration: const Duration(milliseconds: 300),
+                    firstChild: Text(
+                      post.description ?? '',
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          fontSize: 15, color: Colors.white70, height: 1.4),
+                    ),
+                    secondChild: Text(
+                      post.description ?? '',
+                      style: const TextStyle(
+                          fontSize: 14, color: Colors.white70, height: 1.4),
+                    ),
+                    crossFadeState:
+                        _isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                  ),
+                  if ((post.description?.length ?? 0) > 120)
+                    GestureDetector(
+                      onTap: () => setState(() => _isExpanded = !_isExpanded),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(
+                          _isExpanded ? "Show Less" : "Show More",
+                          style: const TextStyle(
+                            color: CupertinoColors.activeBlue,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      );
-                    },
-                  ),
-                ),
-              if (imageUrl != null) const SizedBox(height: 12),
-              Text(
-                post.description?.isNotEmpty ?? false ? post.description! : 'No Description',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black87,
-                  height: 1.5,
-                  letterSpacing: 0.3,
-                ),
-                maxLines: _isExpanded ? null : 3,
-                overflow: _isExpanded ? null : TextOverflow.ellipsis,
-              ),
-              if ((post.description?.length ?? 0) > 150)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _isExpanded = !_isExpanded;
-                      });
-                    },
-                    child: Text(
-                      _isExpanded ? 'Show Less' : 'Show More',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.blueAccent,
                       ),
                     ),
-                  ),
+                ],
+              ),
+            ),
+
+            if (imageUrl != null)
+              CachedNetworkImage(
+                imageUrl: imageUrl,
+                height: 220,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                placeholder: (_, __) => Container(
+                  color: Colors.grey[800],
+                  height: 220,
                 ),
-            ],
-          ),
+              ),
+
+            const SizedBox(height: 12),
+          ],
         ),
       ),
     );
