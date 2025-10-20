@@ -5,7 +5,6 @@ import 'package:jobarchy_flutter_app/core/utils/environment.dart';
 import 'package:jobarchy_flutter_app/core/widget/posts/postcard.dart';
 import 'package:jobarchy_flutter_app/features/viewmodel/post_viewmodel.dart';
 
-
 class HomeTab extends ConsumerStatefulWidget {
   const HomeTab({super.key});
 
@@ -18,16 +17,12 @@ class _HomeTabState extends ConsumerState<HomeTab> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      ref
-          .read(postViewModelProvider.notifier)
-          .getUserPost('${Environment.baseUrl}home/posts');
+      ref.read(postViewModelProvider.notifier).getUserPost();
     });
   }
 
   Future<void> _refresh() async {
-    await ref
-        .read(postViewModelProvider.notifier)
-        .getUserPost('${Environment.baseUrl}home/posts');
+    await ref.read(postViewModelProvider.notifier).getUserPost();
   }
 
   @override
@@ -35,7 +30,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     final postState = ref.watch(postViewModelProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF090A0F),
+      backgroundColor: const Color(0xFF1F2933),
       appBar: AppBar(
         toolbarHeight: 70,
         elevation: 0,
@@ -65,17 +60,26 @@ class _HomeTabState extends ConsumerState<HomeTab> {
         color: CupertinoColors.activeBlue,
         child: postState.when(
           loading: () => const Center(
-            child: CupertinoActivityIndicator(radius: 16, color: Colors.white70),
+            child: CupertinoActivityIndicator(
+              radius: 16,
+              color: Colors.white70,
+            ),
           ),
           error: (err, _) => Center(
-              child: Text("Error: $err",
-                  style: const TextStyle(color: Colors.white70))),
+            child: Text(
+              "Error: $err",
+              style: const TextStyle(color: Colors.white70),
+            ),
+          ),
           data: (data) {
             final posts = data?.data?.posts ?? [];
             if (posts.isEmpty) {
               return const Center(
-                  child: Text("No posts yet",
-                      style: TextStyle(color: Colors.white70)));
+                child: Text(
+                  "No posts yet",
+                  style: TextStyle(color: Colors.white70),
+                ),
+              );
             }
             return ListView.builder(
               padding: const EdgeInsets.only(top: 8),

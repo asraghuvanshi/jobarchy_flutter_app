@@ -2,7 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:jobarchy_flutter_app/core/network/api_service.dart';
 import 'package:jobarchy_flutter_app/core/network/network_exceptions.dart';
-import 'package:jobarchy_flutter_app/features/model/postmodel.dart';
+import 'package:jobarchy_flutter_app/core/utils/app_constant.dart';
+import 'package:jobarchy_flutter_app/features/model/postmodel/postmodel.dart';
 
 final postViewModelProvider =
     StateNotifierProvider<PostViewModel, AsyncValue<UserPostModel?>>(
@@ -14,12 +15,11 @@ class PostViewModel extends StateNotifier<AsyncValue<UserPostModel?>> {
 
   PostViewModel() : super(const AsyncData(null));
 
-  Future<void> getUserPost(String url) async {
+  Future<void> getUserPost() async {
     state = const AsyncLoading();
     try {
-      final data = await _apiService.get(url);
+      final data = await _apiService.get(APIEndPoint.homePosts);
       final posts = UserPostModel.fromJson(data);
-      print(posts);
       state = AsyncData(posts);
     } on NoInternetException {
       state = AsyncError('No Internet Connection', StackTrace.current);

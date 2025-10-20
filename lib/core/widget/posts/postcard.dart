@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:jobarchy_flutter_app/features/model/postmodel.dart';
+import 'package:jobarchy_flutter_app/features/model/postmodel/postmodel.dart';
 import 'package:jobarchy_flutter_app/core/utils/colors.dart';
 
 /// ------------------------------
@@ -89,9 +89,8 @@ class _PostCardState extends ConsumerState<PostCard> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFF1F2933), 
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: AppColors.black.withAlpha(100), width: 1.5),
+        border: Border.all(color: Colors.white.withAlpha(50), width: 1.5),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(22),

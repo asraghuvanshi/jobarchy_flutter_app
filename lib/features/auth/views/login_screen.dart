@@ -170,7 +170,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ref
                     .read(loginViewModelProvider.notifier)
                     .login(
-                      "${Environment.baseUrl}auth/login",
                       emailController.text.trim(),
                       passwordController.text.trim(),
                     );

@@ -47,7 +47,7 @@ class _TabbarScreenState extends State<TabbarScreen>
         children: [
            HomeTab(),
           const AppliedJobsTab(),
-          PostJobTab(),
+          PostJobScreen(),
           const MessagesTab(),
           ProfileTab(),
         ],
@@ -63,7 +63,7 @@ class _TabbarScreenState extends State<TabbarScreen>
           unselectedLabelStyle:
               const TextStyle(fontSize: 10, fontWeight: FontWeight.normal),
           tabs: [
-            Tab(icon: _buildGradientIcon(Icons.work), text: 'Jobs'),
+            Tab(icon: _buildGradientIcon(Icons.work), text: 'Home'),
             Tab(icon: _buildGradientIcon(Icons.check_circle), text: 'Applied'),
             Tab(icon: _buildGradientIcon(Icons.add_circle), text: 'Post'),
             Tab(icon: _buildGradientIcon(Icons.message), text: 'Messages'),
