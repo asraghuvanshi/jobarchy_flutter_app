@@ -113,6 +113,46 @@ class ApiService {
   }
 
   // -----------------------------------------------------------------
+  // 3. DELETE
+  // -----------------------------------------------------------------
+  Future<Map<String, dynamic>> delete(
+    String url, {
+    Map<String, dynamic>? query,
+  }) async {
+    if (!await NetworkChecker.hasInternet()) {
+      throw const NoInternetException();
+    }
+
+    final fullUrl = '${Environment.baseUrl}$url';
+
+    try {
+      if (kDebugMode) {
+        debugPrint('DELETE Request → $fullUrl');
+        debugPrint('Query: $query');
+      }
+
+      final response = await _dio.delete(fullUrl, queryParameters: query);
+
+      if (kDebugMode) {
+        debugPrint('Response [${response.statusCode}] from $fullUrl');
+        debugPrint('Data: ${response.data}');
+      }
+
+      return Map<String, dynamic>.from(response.data);
+    } on DioException catch (e) {
+      if (kDebugMode) {
+        debugPrint('Dio Error → ${e.type}');
+        debugPrint('Message: ${e.message}');
+        debugPrint('URL: $fullUrl');
+      }
+      throw NetworkException.fromDioError(e);
+    } catch (e) {
+      if (kDebugMode) debugPrint('Unexpected Error: $e');
+      rethrow;
+    }
+  }
+
+  // -----------------------------------------------------------------
   // 3. NEW: MULTIPART POST (images + fields)
   // -----------------------------------------------------------------
   /// Sends a multipart request.
@@ -137,7 +177,9 @@ class ApiService {
     if (kDebugMode) {
       debugPrint('POST Multipart → $fullUrl');
       debugPrint('Fields: $fields');
-      debugPrint('Files (${files.length}): ${files.map((f) => f.path).toList()}');
+      debugPrint(
+        'Files (${files.length}): ${files.map((f) => f.path).toList()}',
+      );
     }
 
     // Build FormData
@@ -146,10 +188,7 @@ class ApiService {
       filesFieldName: await Future.wait(
         files.map((file) async {
           final fileName = file.path.split(Platform.pathSeparator).last;
-          return MultipartFile.fromFile(
-            file.path,
-            filename: fileName,
-          );
+          return MultipartFile.fromFile(file.path, filename: fileName);
         }),
       ),
     });
@@ -158,10 +197,7 @@ class ApiService {
       final response = await _dio.post(
         fullUrl,
         data: formData,
-        options: Options(
-          headers: {
-          },
-        ),
+        options: Options(headers: {}),
       );
 
       if (kDebugMode) {

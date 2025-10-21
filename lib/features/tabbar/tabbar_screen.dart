@@ -28,16 +28,14 @@ class _TabbarScreenState extends State<TabbarScreen>
   }
 
   // Gradient icon with larger size
-  Widget _buildGradientIcon(IconData icon) {
-    return ShaderMask(
-      shaderCallback: (Rect bounds) => AppColors.appGradient.createShader(bounds),
-      child: Icon(
-        icon,
-        color: Colors.white,
-        size: 30, 
-      ),
-    );
-  }
+ Widget _buildGradientIcon(IconData icon) {
+  return Icon(
+    icon,
+    color: Colors.white.withAlpha(150), 
+    size: 30,
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +54,7 @@ class _TabbarScreenState extends State<TabbarScreen>
         color: Color(0xFF1B2735),
         child: TabBar(
           controller: _tabController,
-          labelColor: AppColors.orangeColor,
+          labelColor: Colors.white,
           unselectedLabelColor: Colors.grey,
           indicatorColor: Colors.white,
           labelStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500),

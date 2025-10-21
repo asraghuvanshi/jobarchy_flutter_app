@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jobarchy_flutter_app/features/model/postmodel/postmodel.dart';
 import 'package:jobarchy_flutter_app/core/utils/colors.dart';
+import 'package:jobarchy_flutter_app/features/viewmodel/deletepost_viewmodel.dart';
 
 /// ------------------------------
 ///  POST CARD
@@ -50,7 +51,12 @@ class _PostCardState extends ConsumerState<PostCard> {
                 style: TextStyle(color: CupertinoColors.activeBlue)),
           ),
           CupertinoActionSheetAction(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              if (widget.post?.id != null) {
+                 ref.read(deletePostViewModelProvider.notifier).deleteUserPost(widget.post?.id ?? 0);
+              }
+               Navigator.pop(context);
+            },
             isDestructiveAction: true,
             child: const Text('Delete Post',
                 style: TextStyle(color: CupertinoColors.destructiveRed)),
@@ -97,7 +103,6 @@ class _PostCardState extends ConsumerState<PostCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// Header
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
