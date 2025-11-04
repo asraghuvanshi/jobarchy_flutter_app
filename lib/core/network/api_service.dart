@@ -14,7 +14,6 @@ class ApiService {
     // Global interceptor
     _dio.interceptors.add(AppInterceptor());
 
-    // Debug logs
     if (kDebugMode) {
       _dio.interceptors.add(
         LogInterceptor(
