@@ -165,7 +165,7 @@ class ApiService {
     required String url,
     required Map<String, String> fields,
     required List<File> files,
-    String filesFieldName = 'files',
+    String filesFieldName = 'image', // ← CHANGED HERE
   }) async {
     if (!await NetworkChecker.hasInternet()) {
       throw const NoInternetException();

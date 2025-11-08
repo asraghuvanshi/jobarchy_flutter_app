@@ -34,7 +34,7 @@ class CreatePostViewModel
           'country': country,
         },
         files: images,
-        filesFieldName: 'files',
+        filesFieldName: 'image',
       );
 
       final response = CreatePostResponse.fromJson(data);

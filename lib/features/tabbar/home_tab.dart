@@ -87,7 +87,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               itemBuilder: (context, index) {
                 return PostCard(
                   post: posts[index],
-                  baseUrl: Environment.baseUrl,
+                  baseUrl: Environment.assetsBase,
                   currentUserId: "1",
                 );
               },

@@ -115,7 +115,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                       child: post.author?.imageUrl?.isNotEmpty ?? false
                           ? CachedNetworkImage(
                               imageUrl:
-                                  '${widget.baseUrl}${post.author!.imageUrl!.replaceAll('\\', '/')}',
+                                  '${widget.baseUrl}uploads/${post.author!.imageUrl!.replaceAll('\\', '/')}',
                               width: 52,
                               height: 52,
                               fit: BoxFit.cover,
